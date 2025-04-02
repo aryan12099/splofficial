@@ -1,0 +1,99 @@
+// Load saved stats from localStorage (if available)
+let savedStats = JSON.parse(localStorage.getItem('playerStats')) || {
+    name: "Player Name",
+    pic: "default.jpg",
+    matches: 0,
+    runs: 0,
+    fours: 0,
+    sixes: 0,
+    wickets: 0,
+    overs: 0,
+    runsGiven: 0
+};
+
+// Display saved stats
+displayStats();
+
+let previousStats = {
+    name: savedStats.name,
+    pic: savedStats.pic,
+    matches: savedStats.matches,
+    runs: savedStats.runs,
+    fours: savedStats.fours,
+    sixes: savedStats.sixes,
+    wickets: savedStats.wickets,
+    overs: savedStats.overs,
+    runsGiven: savedStats.runsGiven,
+};
+
+function displayStats() {
+    document.getElementById('playerNameDisplay').textContent = savedStats.name;
+    document.getElementById('playerPicDisplay').src = savedStats.pic;
+    document.getElementById('matchesPlayed').textContent = savedStats.matches;
+    document.getElementById('runsScored').textContent = savedStats.runs;
+    document.getElementById('fours').textContent = savedStats.fours;
+    document.getElementById('sixes').textContent = savedStats.sixes;
+    document.getElementById('wicketsTaken').textContent = savedStats.wickets;
+    document.getElementById('oversBowled').textContent = savedStats.overs;
+    document.getElementById('runsGiven').textContent = savedStats.runsGiven;
+    updateBowlingStats();
+}
+
+function updateBowlingStats() {
+    if (savedStats.overs > 0 && savedStats.wickets > 0) {
+        document.getElementById('bowlingAverage').textContent = (savedStats.runsGiven / savedStats.wickets).toFixed(2);
+    } else {
+        document.getElementById('bowlingAverage').textContent = "0.00";
+    }
+    if (savedStats.overs > 0) {
+        document.getElementById('economyRate').textContent = (savedStats.runsGiven / savedStats.overs).toFixed(2);
+    } else {
+        document.getElementById('economyRate').textContent = "0.00";
+    }
+}
+
+function updateStats() {
+    savedStats.matches += parseInt(document.getElementById('addMatches').value) || 0;
+    savedStats.runs += parseInt(document.getElementById('addRuns').value) || 0;
+    savedStats.fours += parseInt(document.getElementById('addFours').value) || 0;
+    savedStats.sixes += parseInt(document.getElementById('addSixes').value) || 0;
+    savedStats.wickets += parseInt(document.getElementById('addWickets').value) || 0;
+    savedStats.overs += parseInt(document.getElementById('addOvers').value) || 0;
+    savedStats.runsGiven += parseInt(document.getElementById('addRunsGiven').value) || 0;
+}
+
+function saveStats() {
+    previousStats = { ...savedStats };
+    updateStats();
+    localStorage.setItem('playerStats', JSON.stringify(savedStats));
+    displayStats();
+    document.getElementById('addMatches').value = 0;
+    document.getElementById('addRuns').value = 0;
+    document.getElementById('addFours').value = 0;
+    document.getElementById('addSixes').value = 0;
+    document.getElementById('addWickets').value = 0;
+    document.getElementById('addOvers').value = 0;
+    document.getElementById('addRunsGiven').value = 0;
+}
+
+function undoStats() {
+    savedStats = { ...previousStats };
+    localStorage.setItem('playerStats', JSON.stringify(savedStats));
+    displayStats();
+}
+
+function changeName() {
+    const newName = document.getElementById('nameInput').value;
+    if (newName.trim() !== "") {
+        savedStats.name = newName;
+        localStorage.setItem('playerStats', JSON.stringify(savedStats));
+        previousStats.name = newName;
+        displayStats();
+        document.getElementById('welcomeMessage').style.display = 'block';
+        setTimeout(() => {
+            document.getElementById('welcomeMessage').style.display = 'none';
+        }, 3000);
+    } else {
+        alert("Please enter a valid name.");
+    }
+}
