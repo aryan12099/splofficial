@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SPL Profile</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            background: linear-gradient(135deg, #90ee90, #add8e6);
+            background-size: 200% 200%;
+            animation: gradientAnimation 15s ease infinite;
+            color: #333;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            text-rendering: optimizeLegibility;
+        }
+        
+        @keyframes gradientAnimation {
+            0% {
+                background-position: 0% 50%;
+            }
+            50% {
+                background-position: 100% 50%;
+            }
+            100% {
+                background-position: 0% 50%;
+            }
+        }
+        
+        .profile-container {
+            background-color: rgba(255, 255, 255, 0.8);
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+            text-align: left;
+            width: 380px;
+        }
+        
+        .player-header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        
+        .player-header img {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-bottom: 10px;
+        }
+        
+        .calculator-container input[type="number"] {
+            background-color: rgba(255, 255, 255, 0.9);
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 8px;
+            color: #333;
+            margin-bottom: 5px;
+        }
+        
+        .calculator-container button {
+            background-color: #008000;
+            border: none;
+            border-radius: 5px;
+            padding: 10px 15px;
+            color: #fff;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+        
+        .calculator-container button:hover {
+            background-color: #006400;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 5px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="profile-container">
+        <div class="player-header">
+            <img id="playerPicDisplay" src="default.jpg" alt="Player Profile Picture">
+            <h2 id="playerNameDisplay">Player Name</h2>
+            <input type="text" id="nameInput" placeholder="Enter Your Name" style="margin-top: 10px;">
+            <button onclick="changeName()">Change Name</button>
+            <p id="welcomeMessage" style="display: none; color: green; margin-top: 10px;">Welcome to your SPL profile!</p>
+        </div>
+
+        <p><strong>Matches Played:</strong> <span id="matchesPlayed">0</span></p>
+        <p><strong>Runs:</strong> <span id="runsScored">0</span></p>
+        <p><strong>4s:</strong> <span id="fours">0</span></p>
+        <p><strong>6s:</strong> <span id="sixes">0</span></p>
+
+        <p><strong>Wickets:</strong> <span id="wicketsTaken">0</span></p>
+        <p><strong>Overs:</strong> <span id="oversBowled">0</span></p>
+        <p><strong>Runs Given:</strong> <span id="runsGiven">0</span></p>
+        <p><strong>Bowling Average:</strong> <span id="bowlingAverage">0.00</span></p>
+        <p><strong>Economy:</strong> <span id="economyRate">0.00</span></p>
+
+        <div class="calculator-container">
+            <h3>Add Match Stats</h3>
+            <label for="addMatches">Matches Played:</label>
+            <input type="number" id="addMatches" value="0"><br><br>
+
+            <label for="addRuns">Runs Scored:</label>
+            <input type="number" id="addRuns" value="0"><br><br>
+
+            <label for="addFours">4s:</label>
+            <input type="number" id="addFours" value="0"><br><br>
+
+            <label for="addSixes">6s:</label>
+            <input type="number" id="addSixes" value="0"><br><br>
+
+            <label for="addWickets">Wickets:</label>
+            <input type="number" id="addWickets" value="0"><br><br>
+
+            <label for="addOvers">Overs:</label>
+            <input type="number" id="addOvers" value="0"><br><br>
+
+            <label for="addRunsGiven">Runs Given:</label>
+            <input type="number" id="addRunsGiven" value="0"><br><br>
+
+            <button onclick="saveStats()">Save Stats</button>
+            <button onclick="undoStats()">Undo</button>
+        </div>
+    </div>
+
+    <script>
+        // Load saved stats from localStorage (if available)
+        let savedStats = JSON.parse(localStorage.getItem('playerStats')) || {
+            name: "Player Name",
+            pic: "default.jpg",
+            matches: 0,
+            runs: 0,
+            fours: 0,
+            sixes: 0,
+            wickets: 0,
+            overs: 0,
+            runsGiven: 0
+        };
+
+        // Display saved stats
+        displayStats();
+
+        let previousStats = {
+            name: savedStats.name,
+            pic: savedStats.pic,
+            matches: savedStats.matches,
+            runs: savedStats.runs,
+            fours: savedStats.fours,
+            sixes: savedStats.sixes,
+            wickets: savedStats.wickets,
+            overs: savedStats.overs,
+            runsGiven: savedStats.runsGiven,
+        };
+
+        function displayStats() {
+            document.getElementById('playerNameDisplay').textContent = savedStats.name;
+            document.getElementById('playerPicDisplay').src = savedStats.pic;
+            document.getElementById('matchesPlayed').textContent = savedStats.matches;
+            document.getElementById('runsScored').textContent = savedStats.runs;
+            document.getElementById('fours').textContent = savedStats.fours;
+            document.getElementById('sixes').textContent = savedStats.sixes;
+            document.getElementById('wicketsTaken').textContent = savedStats.wickets;
+            document.getElementById('oversBowled').textContent = savedStats.overs;
+            document.getElementById('runsGiven').textContent = savedStats.runsGiven;
+            updateBowlingStats();
+        }
+
+        function updateBowlingStats() {
+            if (savedStats.overs > 0 && savedStats.wickets > 0) {
+                document.getElementById('bowlingAverage').textContent = (savedStats.runsGiven / savedStats.wickets).toFixed(2);
+            } else {
+                document.getElementById('bowlingAverage').textContent = "0.00";
+            }
+            if (savedStats.overs > 0) {
+                document.getElementById('economyRate').textContent = (savedStats.runsGiven / savedStats.overs).toFixed(2);
+            } else {
+                document.getElementById('economyRate').textContent = "0.00";
+            }
+        }
+
+        function updateStats() {
+            savedStats.matches += parseInt(document.getElementById('addMatches').value) || 0;
+            savedStats.runs += parseInt(document.getElementById('addRuns').value) || 0;
+            savedStats.fours += parseInt(document.getElementById('addFours').value) || 0;
+            savedStats.sixes += parseInt(document.getElementById('addSixes').value) || 0;
+            savedStats.wickets += parseInt(document.getElementById('addWickets').value) || 0;
+            savedStats.overs += parseInt(document.getElementById('addOvers').value) || 0;
+            savedStats.runsGiven += parseInt(document.getElementById('addRunsGiven').value) || 0;
+        }
+
+        function saveStats() {
+            previousStats = {...savedStats
+            };
+            updateStats();
+            localStorage.setItem('playerStats', JSON.stringify(savedStats));
+            displayStats();
+            document.getElementById('addMatches').value = 0;
+            document.getElementById('addRuns').value = 0;
+            document.getElementById('addFours').value = 0;
+            document.getElementById('addSixes').value = 0;
+            document.getElementById('addWickets').value = 0;
+            document.getElementById('addOvers').value = 0;
+            document.getElementById('addRunsGiven').value = 0;
+        }
+
+        function undoStats() {
+            savedStats = {...previousStats
+            };
+            localStorage.setItem('playerStats', JSON.stringify(savedStats));
+            displayStats();
+        }
+
+        function changeName() {
+            const newName = document.getElementById('nameInput').value;
+            if (newName.trim() !== "") {
+                savedStats.name = newName;
+                localStorage.setItem('playerStats', JSON.stringify(savedStats));
+                previousStats.name = newName;
+                displayStats();
+                document.getElementById('welcomeMessage').style.display = 'block';
+                setTimeout(() => {
+                    document.getElementById('welcomeMessage').style.display = 'none';
+                }, 3000);
+            } else {
+                alert("Please enter a valid name.");
+            }
+        }
+    </script>
+</body>
+
+</html>
