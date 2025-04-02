@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SPL Profile - Registration</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            background: linear-gradient(135deg, #90ee90, #add8e6);
+            background-size: 200% 200%;
+            animation: gradientAnimation 15s ease infinite;
+            color: #333;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            text-rendering: optimizeLegibility;
+        }
+
+        @keyframes gradientAnimation {
+            0% {
+                background-position: 0% 50%;
+            }
+            50% {
+                background-position: 100% 50%;
+            }
+            100% {
+                background-position: 0% 50%;
+            }
+        }
+
+        .registration-container {
+            background-color: rgba(255, 255, 255, 0.8);
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+            text-align: left;
+            width: 380px;
+        }
+
+        .registration-container label {
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .registration-container input {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+
+        .registration-container button {
+            background-color: #008000;
+            border: none;
+            border-radius: 5px;
+            padding: 10px 15px;
+            color: #fff;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        .registration-container button:hover {
+            background-color: #006400;
+        }
+
+    </style>
+</head>
+<body>
+    <div class="registration-container">
+        <h2>Register for SPL</h2>
+        <form id="registrationForm">
+            <label for="username">Username:</label>
+            <input type="text" id="username" name="username" required>
+
+            <label for="email">Email:</label>
+            <input type="email" id="email" name="email" required>
+
+            <label for="password">Password:</label>
+            <input type="password" id="password" name="password" required>
+
+            <label for="confirmPassword">Confirm Password:</label>
+            <input type="password" id="confirmPassword" name="confirmPassword" required>
+
+            <button type="submit">Register</button>
+        </form>
+    </div>
+
+    <script>
+        document.getElementById('registrationForm').addEventListener('submit', function(event) {
+            event.preventDefault(); // Prevent default form submission
+
+            const username = document.getElementById('username').value;
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+
+            if (password !== confirmPassword) {
+                alert("Passwords do not match.");
+                return;
+            }
+
+            // Basic email validation (you may want to improve this)
+            if (!email.includes('@')) {
+                alert("Invalid email format.");
+                return;
+            }
+
+            // Here you would typically send the registration data to a server
+            // For this example, we'll just log it to the console
+            console.log("Registration Details:", { username, email, password });
+
+            // Store user data in local storage
+            const userData = {username, email, password};
+            localStorage.setItem('userData', JSON.stringify(userData));
+
+            alert("Registration successful!");
+            // Optionally redirect to a login page or profile page.
+            window.location.href = "index.html"; //replace index.html with the name of your main page.
+        });
+    </script>
+</body>
+</html>
